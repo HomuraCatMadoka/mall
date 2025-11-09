@@ -9,3 +9,11 @@ target/
 .settings/
 .classpath
 .project
+
+# logs
+logs/
+
+# docker
+document/docker/data/
+
+.vscode/

@@ -92,13 +92,6 @@ elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/
 - 启动项目：直接运行com.macro.mall.MallAdminApplication的main方法即可
 - 接口文档地址：http://localhost:8080/swagger-ui.html
 
-## mall-search
-
-- 启动项目：直接运行com.macro.mall.search.MallSearchApplication的main方法即可
-- 接口文档地址：http://localhost:8081/swagger-ui.html
-- 使用前需要先调用接口导入数据；http://localhost:8081/esProduct/importAll
-- 如出现无法启动的问题，可以先删除elasticsearch里面的数据再启动
-
 ## mall-portal
 
 - 启动mall-portal项目：直接运行com.macro.mall.portal.MallPortalApplication的main方法即可
