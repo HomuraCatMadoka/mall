@@ -17,3 +17,5 @@ logs/
 document/docker/data/
 
 .vscode/
+
+.m2-local/

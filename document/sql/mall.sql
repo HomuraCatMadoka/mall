@@ -3255,3 +3255,104 @@ INSERT INTO `ums_role_resource_relation` VALUES (247, 1, 31);
 INSERT INTO `ums_role_resource_relation` VALUES (248, 1, 32);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ----------------------------
+-- Table structure for pms_veg_category
+-- ----------------------------
+DROP TABLE IF EXISTS `pms_veg_category`;
+CREATE TABLE `pms_veg_category`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `parent_id` bigint(20) NULL DEFAULT 0,
+  `name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `icon` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `sort` int(11) NULL DEFAULT 0,
+  `show_status` int(1) NULL DEFAULT 1,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '蔬菜分类表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of pms_veg_category
+-- ----------------------------
+BEGIN;
+INSERT INTO `pms_veg_category`(`id`, `parent_id`, `name`, `icon`, `sort`, `show_status`, `create_time`, `update_time`) VALUES (1, 0, '叶菜类', NULL, 2, 1, NOW(), NOW());
+INSERT INTO `pms_veg_category`(`id`, `parent_id`, `name`, `icon`, `sort`, `show_status`, `create_time`, `update_time`) VALUES (2, 0, '根茎类', NULL, 1, 1, NOW(), NOW());
+COMMIT;
+
+-- ----------------------------
+-- Table structure for pms_veg_product
+-- ----------------------------
+DROP TABLE IF EXISTS `pms_veg_product`;
+CREATE TABLE `pms_veg_product`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `category_id` bigint(20) NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `sub_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `pic` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `spec_desc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `unit` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `price` decimal(10, 2) NOT NULL,
+  `sort` int(11) NULL DEFAULT 0,
+  `recommend_status` int(1) NULL DEFAULT 1,
+  `status` int(1) NULL DEFAULT 1,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '蔬菜商品表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of pms_veg_product
+-- ----------------------------
+BEGIN;
+INSERT INTO `pms_veg_product`(`id`, `category_id`, `name`, `sub_title`, `pic`, `spec_desc`, `unit`, `price`, `sort`, `recommend_status`, `status`, `create_time`, `update_time`) VALUES (1, 1, '上海青', '自种有机', NULL, '500g/份', '份', 5.50, 10, 1, 1, NOW(), NOW());
+INSERT INTO `pms_veg_product`(`id`, `category_id`, `name`, `sub_title`, `pic`, `spec_desc`, `unit`, `price`, `sort`, `recommend_status`, `status`, `create_time`, `update_time`) VALUES (2, 1, '菠菜', '当天采摘', NULL, '400g/份', '份', 6.20, 9, 1, 1, NOW(), NOW());
+INSERT INTO `pms_veg_product`(`id`, `category_id`, `name`, `sub_title`, `pic`, `spec_desc`, `unit`, `price`, `sort`, `recommend_status`, `status`, `create_time`, `update_time`) VALUES (3, 2, '黄心土豆', '粉糯口感', NULL, '1kg/袋', '袋', 4.30, 8, 1, 1, NOW(), NOW());
+COMMIT;
+
+-- ----------------------------
+-- Table structure for veg_order
+-- ----------------------------
+DROP TABLE IF EXISTS `veg_order`;
+CREATE TABLE `veg_order`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_id` bigint(20) NOT NULL,
+  `member_username` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `order_sn` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `status` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'PENDING',
+  `total_amount` decimal(10, 2) NOT NULL,
+  `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `operator_remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `submit_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `handle_time` datetime NULL DEFAULT NULL,
+  `close_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '蔬菜订单表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for veg_order_item
+-- ----------------------------
+DROP TABLE IF EXISTS `veg_order_item`;
+CREATE TABLE `veg_order_item`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(20) NOT NULL,
+  `product_id` bigint(20) NOT NULL,
+  `product_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `product_pic` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `spec_desc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `unit` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `price` decimal(10, 2) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '蔬菜订单明细表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Sample order data
+-- ----------------------------
+BEGIN;
+INSERT INTO `veg_order`(`id`, `member_id`, `member_username`, `order_sn`, `status`, `total_amount`, `remark`, `operator_remark`, `submit_time`, `handle_time`, `close_time`)
+VALUES (1, 1, 'macro', 'VEG202501010001', 'PENDING', 9.80, '少泥', NULL, NOW(), NULL, NULL);
+INSERT INTO `veg_order_item`(`id`, `order_id`, `product_id`, `product_name`, `product_pic`, `spec_desc`, `unit`, `price`, `quantity`) VALUES
+(1, 1, 1, '上海青', NULL, '500g/份', '份', 5.50, 1),
+(2, 1, 3, '黄心土豆', NULL, '1kg/袋', '袋', 4.30, 1);
+COMMIT;

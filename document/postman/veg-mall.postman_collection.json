@@ -1,0 +1,237 @@
+{
+  "info": {
+    "name": "Veg Mall API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{portalBaseUrl}}/auth/register",
+          "host": [
+            "{{portalBaseUrl}}"
+          ],
+          "path": ["auth","register"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{portalUsername}}\",\n  \"password\": \"{{portalPassword}}\",\n  \"mobile\": \"{{portalMobile}}\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "if (json.data && json.data.token) {",
+              "    pm.collectionVariables.set('portalToken', json.data.token);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{portalBaseUrl}}/auth/login",
+          "host": ["{{portalBaseUrl}}"],
+          "path": ["auth","login"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{portalUsername}}\",\n  \"password\": \"{{portalPassword}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Veg Categories",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{portalToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{portalBaseUrl}}/veg/categories",
+          "host": ["{{portalBaseUrl}}"],
+          "path": ["veg","categories"]
+        }
+      }
+    },
+    {
+      "name": "Veg Products",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{portalToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{portalBaseUrl}}/veg/products",
+          "host": ["{{portalBaseUrl}}"],
+          "path": ["veg","products"]
+        }
+      }
+    },
+    {
+      "name": "Veg Submit Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "if (json.data && json.data.orderSn) {",
+              "    pm.collectionVariables.set('vegOrderSn', json.data.orderSn);",
+              "    pm.collectionVariables.set('vegOrderId', json.data.orderId);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{portalToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{portalBaseUrl}}/veg/orders",
+          "host": ["{{portalBaseUrl}}"],
+          "path": ["veg","orders"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"remark\": \"测试订单\",\n  \"items\": [\n    {\n      \"productId\": {{vegSampleProductId}},\n      \"quantity\": 1\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "Veg Order List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{portalToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{portalBaseUrl}}/veg/orders",
+          "host": ["{{portalBaseUrl}}"],
+          "path": ["veg","orders"]
+        }
+      }
+    },
+    {
+      "name": "Admin Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "if (json.data && json.data.token) {",
+              "    pm.collectionVariables.set('adminToken', json.data.token);",
+              "}",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{adminBaseUrl}}/admin/login",
+          "host": ["{{adminBaseUrl}}"],
+          "path": ["admin","login"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Admin Veg Order List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{adminBaseUrl}}/veg/order/list",
+          "host": ["{{adminBaseUrl}}"],
+          "path": ["veg","order","list"],
+          "query": [
+            {"key":"pageNum","value":"1"},
+            {"key":"pageSize","value":"10"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "Admin Update Order Status",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{adminBaseUrl}}/veg/order/updateStatus/{{vegOrderId}}",
+          "host": ["{{adminBaseUrl}}"],
+          "path": ["veg","order","updateStatus","{{vegOrderId}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"CLOSED\",\n  \"operatorRemark\": \"Postman 自动化\"\n}"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.macro.mall.mapper.VegOrderMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.VegOrder">
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="member_id" property="memberId" jdbcType="BIGINT" />
+    <result column="member_username" property="memberUsername" jdbcType="VARCHAR" />
+    <result column="order_sn" property="orderSn" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="operator_remark" property="operatorRemark" jdbcType="VARCHAR" />
+    <result column="submit_time" property="submitTime" jdbcType="TIMESTAMP" />
+    <result column="handle_time" property="handleTime" jdbcType="TIMESTAMP" />
+    <result column="close_time" property="closeTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, member_id, member_username, order_sn, status, total_amount, remark, operator_remark,
+    submit_time, handle_time, close_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from veg_order where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByMember" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from veg_order
+    where member_id = #{memberId,jdbcType=BIGINT}
+      <if test="status != null and status != ''">
+        and status = #{status,jdbcType=VARCHAR}
+      </if>
+    order by submit_time desc, id desc
+  </select>
+
+  <select id="selectForAdmin" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from veg_order
+    where 1 = 1
+      <if test="memberUsername != null and memberUsername != ''">
+        and member_username = #{memberUsername,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null and status != ''">
+        and status = #{status,jdbcType=VARCHAR}
+      </if>
+    order by submit_time desc, id desc
+  </select>
+
+  <insert id="insert" parameterType="com.macro.mall.model.VegOrder" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into veg_order (id, member_id, member_username, status, total_amount,
+      remark, operator_remark, submit_time, handle_time, close_time)
+    values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{memberUsername,jdbcType=VARCHAR},
+      #{orderSn,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{totalAmount,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR},
+      #{operatorRemark,jdbcType=VARCHAR}, #{submitTime,jdbcType=TIMESTAMP},
+      #{handleTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.macro.mall.model.VegOrder" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into veg_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null">id,</if>
+      <if test="memberId != null">member_id,</if>
+      <if test="memberUsername != null">member_username,</if>
+      <if test="orderSn != null">order_sn,</if>
+      <if test="status != null">status,</if>
+      <if test="totalAmount != null">total_amount,</if>
+      <if test="remark != null">remark,</if>
+      <if test="operatorRemark != null">operator_remark,</if>
+      <if test="submitTime != null">submit_time,</if>
+      <if test="handleTime != null">handle_time,</if>
+      <if test="closeTime != null">close_time,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null">#{id,jdbcType=BIGINT},</if>
+      <if test="memberId != null">#{memberId,jdbcType=BIGINT},</if>
+      <if test="memberUsername != null">#{memberUsername,jdbcType=VARCHAR},</if>
+      <if test="orderSn != null">#{orderSn,jdbcType=VARCHAR},</if>
+      <if test="status != null">#{status,jdbcType=VARCHAR},</if>
+      <if test="totalAmount != null">#{totalAmount,jdbcType=DECIMAL},</if>
+      <if test="remark != null">#{remark,jdbcType=VARCHAR},</if>
+      <if test="operatorRemark != null">#{operatorRemark,jdbcType=VARCHAR},</if>
+      <if test="submitTime != null">#{submitTime,jdbcType=TIMESTAMP},</if>
+      <if test="handleTime != null">#{handleTime,jdbcType=TIMESTAMP},</if>
+      <if test="closeTime != null">#{closeTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.VegOrder">
+    update veg_order
+    <set>
+      <if test="memberId != null">member_id = #{memberId,jdbcType=BIGINT},</if>
+      <if test="memberUsername != null">member_username = #{memberUsername,jdbcType=VARCHAR},</if>
+      <if test="orderSn != null">order_sn = #{orderSn,jdbcType=VARCHAR},</if>
+      <if test="status != null">status = #{status,jdbcType=VARCHAR},</if>
+      <if test="totalAmount != null">total_amount = #{totalAmount,jdbcType=DECIMAL},</if>
+      <if test="remark != null">remark = #{remark,jdbcType=VARCHAR},</if>
+      <if test="operatorRemark != null">operator_remark = #{operatorRemark,jdbcType=VARCHAR},</if>
+      <if test="submitTime != null">submit_time = #{submitTime,jdbcType=TIMESTAMP},</if>
+      <if test="handleTime != null">handle_time = #{handleTime,jdbcType=TIMESTAMP},</if>
+      <if test="closeTime != null">close_time = #{closeTime,jdbcType=TIMESTAMP},</if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from veg_order where id = #{id,jdbcType=BIGINT}
+  </delete>
+</mapper>

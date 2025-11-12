@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -80,30 +81,18 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         if(!verifyAuthCode(authCode,telephone)){
             Asserts.fail("验证码错误");
         }
-        //查询是否已有该用户
-        UmsMemberExample example = new UmsMemberExample();
-        example.createCriteria().andUsernameEqualTo(username);
-        example.or(example.createCriteria().andPhoneEqualTo(telephone));
-        List<UmsMember> umsMembers = memberMapper.selectByExample(example);
-        if (!CollectionUtils.isEmpty(umsMembers)) {
-            Asserts.fail("该用户已经存在");
-        }
-        //没有该用户进行添加操作
-        UmsMember umsMember = new UmsMember();
-        umsMember.setUsername(username);
-        umsMember.setPhone(telephone);
-        umsMember.setPassword(passwordEncoder.encode(password));
-        umsMember.setCreateTime(new Date());
-        umsMember.setStatus(1);
-        //获取默认会员等级并设置
-        UmsMemberLevelExample levelExample = new UmsMemberLevelExample();
-        levelExample.createCriteria().andDefaultStatusEqualTo(1);
-        List<UmsMemberLevel> memberLevelList = memberLevelMapper.selectByExample(levelExample);
-        if (!CollectionUtils.isEmpty(memberLevelList)) {
-            umsMember.setMemberLevelId(memberLevelList.get(0).getId());
-        }
+        UmsMember umsMember = initMember(username, password, telephone);
         memberMapper.insert(umsMember);
         umsMember.setPassword(null);
+    }
+
+    @Override
+    @Transactional
+    public UmsMember registerWithoutAuthCode(String username, String password, String telephone) {
+        UmsMember umsMember = initMember(username, password, telephone);
+        memberMapper.insert(umsMember);
+        umsMember.setPassword(null);
+        return umsMember;
     }
 
     @Override
@@ -191,6 +180,32 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         }
         String realAuthCode = memberCacheService.getAuthCode(telephone);
         return authCode.equals(realAuthCode);
+    }
+
+    private UmsMember initMember(String username, String password, String telephone) {
+        if(StrUtil.isEmpty(username) || StrUtil.isEmpty(password) || StrUtil.isEmpty(telephone)) {
+            Asserts.fail("注册信息不完整");
+        }
+        UmsMemberExample example = new UmsMemberExample();
+        example.createCriteria().andUsernameEqualTo(username);
+        example.or(example.createCriteria().andPhoneEqualTo(telephone));
+        List<UmsMember> umsMembers = memberMapper.selectByExample(example);
+        if (!CollectionUtils.isEmpty(umsMembers)) {
+            Asserts.fail("该用户已经存在");
+        }
+        UmsMember umsMember = new UmsMember();
+        umsMember.setUsername(username);
+        umsMember.setPhone(telephone);
+        umsMember.setPassword(passwordEncoder.encode(password));
+        umsMember.setCreateTime(new Date());
+        umsMember.setStatus(1);
+        UmsMemberLevelExample levelExample = new UmsMemberLevelExample();
+        levelExample.createCriteria().andDefaultStatusEqualTo(1);
+        List<UmsMemberLevel> memberLevelList = memberLevelMapper.selectByExample(levelExample);
+        if (!CollectionUtils.isEmpty(memberLevelList)) {
+            umsMember.setMemberLevelId(memberLevelList.get(0).getId());
+        }
+        return umsMember;
     }
 
 }

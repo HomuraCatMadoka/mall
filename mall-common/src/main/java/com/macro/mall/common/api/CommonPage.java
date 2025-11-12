@@ -45,6 +45,16 @@ public class CommonPage<T> {
         return result;
     }
 
+    public static <T> CommonPage<T> restPage(PageInfo<T> pageInfo) {
+        CommonPage<T> result = new CommonPage<T>();
+        result.setTotalPage(pageInfo.getPages());
+        result.setPageNum(pageInfo.getPageNum());
+        result.setPageSize(pageInfo.getPageSize());
+        result.setTotal(pageInfo.getTotal());
+        result.setList(pageInfo.getList());
+        return result;
+    }
+
     /**
      * 将SpringData分页后的list转为分页信息
      */

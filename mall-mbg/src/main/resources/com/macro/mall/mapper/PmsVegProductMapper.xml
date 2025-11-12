@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.macro.mall.mapper.PmsVegProductMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsVegProduct">
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="category_id" property="categoryId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sub_title" property="subTitle" jdbcType="VARCHAR" />
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
+    <result column="spec_desc" property="specDesc" jdbcType="VARCHAR" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="recommend_status" property="recommendStatus" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, category_id, name, sub_title, pic, spec_desc, unit, price, sort, recommend_status,
+    status, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from pms_veg_product where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByCategoryId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from pms_veg_product
+    where category_id = #{categoryId,jdbcType=BIGINT}
+      and status = 1
+    order by sort desc, id asc
+  </select>
+
+  <select id="selectByKeyword" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from pms_veg_product
+    where status = 1
+      <if test="keyword != null and keyword != ''">
+        and (name like concat('%', #{keyword}, '%') or spec_desc like concat('%', #{keyword}, '%'))
+      </if>
+    order by sort desc, id asc
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from pms_veg_product order by id desc
+  </select>
+
+  <insert id="insert" parameterType="com.macro.mall.model.PmsVegProduct">
+    insert into pms_veg_product (id, category_id, name, sub_title, pic, spec_desc, unit, price,
+      sort, recommend_status, status, create_time, update_time)
+    values (#{id,jdbcType=BIGINT}, #{categoryId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
+      #{subTitle,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{specDesc,jdbcType=VARCHAR},
+      #{unit,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{sort,jdbcType=INTEGER},
+      #{recommendStatus,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsVegProduct">
+    insert into pms_veg_product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null">id,</if>
+      <if test="categoryId != null">category_id,</if>
+      <if test="name != null">name,</if>
+      <if test="subTitle != null">sub_title,</if>
+      <if test="pic != null">pic,</if>
+      <if test="specDesc != null">spec_desc,</if>
+      <if test="unit != null">unit,</if>
+      <if test="price != null">price,</if>
+      <if test="sort != null">sort,</if>
+      <if test="recommendStatus != null">recommend_status,</if>
+      <if test="status != null">status,</if>
+      <if test="createTime != null">create_time,</if>
+      <if test="updateTime != null">update_time,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null">#{id,jdbcType=BIGINT},</if>
+      <if test="categoryId != null">#{categoryId,jdbcType=BIGINT},</if>
+      <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+      <if test="subTitle != null">#{subTitle,jdbcType=VARCHAR},</if>
+      <if test="pic != null">#{pic,jdbcType=VARCHAR},</if>
+      <if test="specDesc != null">#{specDesc,jdbcType=VARCHAR},</if>
+      <if test="unit != null">#{unit,jdbcType=VARCHAR},</if>
+      <if test="price != null">#{price,jdbcType=DECIMAL},</if>
+      <if test="sort != null">#{sort,jdbcType=INTEGER},</if>
+      <if test="recommendStatus != null">#{recommendStatus,jdbcType=INTEGER},</if>
+      <if test="status != null">#{status,jdbcType=INTEGER},</if>
+      <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+      <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsVegProduct">
+    update pms_veg_product
+    <set>
+      <if test="categoryId != null">category_id = #{categoryId,jdbcType=BIGINT},</if>
+      <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="subTitle != null">sub_title = #{subTitle,jdbcType=VARCHAR},</if>
+      <if test="pic != null">pic = #{pic,jdbcType=VARCHAR},</if>
+      <if test="specDesc != null">spec_desc = #{specDesc,jdbcType=VARCHAR},</if>
+      <if test="unit != null">unit = #{unit,jdbcType=VARCHAR},</if>
+      <if test="price != null">price = #{price,jdbcType=DECIMAL},</if>
+      <if test="sort != null">sort = #{sort,jdbcType=INTEGER},</if>
+      <if test="recommendStatus != null">recommend_status = #{recommendStatus,jdbcType=INTEGER},</if>
+      <if test="status != null">status = #{status,jdbcType=INTEGER},</if>
+      <if test="createTime != null">create_time = #{createTime,jdbcType=TIMESTAMP},</if>
+      <if test="updateTime != null">update_time = #{updateTime,jdbcType=TIMESTAMP},</if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_veg_product where id = #{id,jdbcType=BIGINT}
+  </delete>
+</mapper>

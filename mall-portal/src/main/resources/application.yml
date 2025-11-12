@@ -37,6 +37,7 @@ secure:
       - /product/**
       - /brand/**
       - /alipay/**
+      - /auth/**
 
 # 自定义redis key
 redis:
@@ -58,4 +59,3 @@ rabbitmq:
   queue:
     name:
       cancelOrder: cancelOrderQueue
-
